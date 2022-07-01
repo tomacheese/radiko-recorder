@@ -316,13 +316,13 @@ function record($sid, $from)
 
     if (file_exists($LAST_OUTPUT_PATH)) {
         chmod($LAST_OUTPUT_PATH, 0755);
-        unlink($OUTPUT_PATH);
         echo "Download completed!\n";
         $downloaded = json_decode(file_get_contents("/data/downloaded.json"), true);
         $downloaded[] = date("Ymd_D", $unixtime) . "_$title";
         file_put_contents("/data/downloaded.json", json_encode($downloaded));
 
         DiscordSend($DISCORD_CHANNEL_ID, ":white_check_mark:録音が完了しました: `$title` (`$ft` - `$to`) - TS:`" . formatBytes(filesize($OUTPUT_PATH)). "` / MP3:`" . formatBytes(filesize($LAST_OUTPUT_PATH)). "`");
+        unlink($OUTPUT_PATH);
     } else {
         echo "Download failed!";
         DiscordSend($DISCORD_CHANNEL_ID, ":x:録音に失敗しました(output file not found): `$title` (`$ft` - `$to`)");
