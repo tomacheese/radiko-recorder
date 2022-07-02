@@ -1,13 +1,14 @@
-FROM php:8
+FROM php:8-alpine
 
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install ffmpeg -y
+RUN apk update
+RUN apk upgrade
+
+RUN apk add ffmpeg
 
 WORKDIR /app
 
 COPY main.php .
-COPY entrypoint.sh .
+COPY entrypoint.sh /app/
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT [ "/app/entrypoint.sh" ]
