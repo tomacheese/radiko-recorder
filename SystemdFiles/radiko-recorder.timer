@@ -1,0 +1,9 @@
+[Unit]
+Description=radiko-recorder
+
+[Timer]
+Unit=radiko-recorder.service
+OnCalendar=*-*-* 17:00:00
+
+[Install]
+WantedBy=timers.target
