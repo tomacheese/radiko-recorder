@@ -6,6 +6,6 @@ services:
     volumes:
       - type: bind
         source: ./data
-        target: "/data"
+        target: /data
     env_file:
       - radiko-recorder.env
