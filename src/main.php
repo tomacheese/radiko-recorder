@@ -154,7 +154,7 @@ function record($sid, $from)
 
     if ($unixtime >= time()) {
         echo "It has not been broadcast yet.";
-        exit;
+        return;
     }
 
     echo "Title: $title\n";
@@ -175,7 +175,7 @@ function record($sid, $from)
     $downloaded = file_exists("/data/downloaded.json") ? json_decode(file_get_contents("/data/downloaded.json"), true) : [];
     if (in_array(date("Ymd_D", $unixtime) . "_$title", $downloaded)) {
         echo "Downloaded. skip\n";
-        exit;
+        return;
     }
 
     $FILE = date("Ymd_D", $unixtime) . "_$title.mp3";
@@ -261,7 +261,7 @@ function record($sid, $from)
 
     if ($auth_token == null) {
         echo "auth_token == null\n";
-        exit;
+        return;
     }
     echo "auth_token = $auth_token\n";
     echo "keyOffset = $keyOffset\n";
@@ -296,7 +296,7 @@ function record($sid, $from)
     if ($ret != 0) {
         echo "ffmpeg error\n";
         DiscordSend($DISCORD_CHANNEL_ID, ":x:録音に失敗しました(ffmpeg error): `$title` (`$ft` - `$to`)");
-        exit;
+        return;
     }
 
     $PATH_META = $OUTPUT_DIR . date("Ymd_D", $unixtime) . "_$title.meta.txt";
