@@ -2,11 +2,11 @@ FROM php:8-alpine
 
 RUN apk update && \
   apk upgrade && \
-  apk add --update --no-cache tzdata=2022a-r2 && \
+  apk add --update --no-cache tzdata && \
   cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
   echo "Asia/Tokyo" > /etc/timezone && \
   apk del tzdata && \
-  apk add --no-cache ffmpeg=5.0.1-r3
+  apk add --no-cache ffmpeg
 
 WORKDIR /app
 
