@@ -1,4 +1,7 @@
 <?php
+date_default_timezone_set("Asia/Tokyo");
+ini_set("memory_limit", -1);
+
 function DiscordSend($channel, $message, $embed = null)
 {
     $Token = $_ENV["DISCORD_TOKEN"];
@@ -51,17 +54,6 @@ function formatBytes($size, $precision = 2)
     return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
 }
 
-ini_set("memory_limit", -1);
-if (!isset($argv[1]) || !isset($argv[2])) {
-    echo "StationID(ex. TBS): ";
-    $sid = trim(fgets(STDIN));
-    echo "From(ex. 2020/01/01 00:00:00): ";
-    $from = trim(fgets(STDIN));
-} else {
-    $sid = $argv[1];
-    $from = $argv[2];
-}
-
 function record($sid, $from)
 {
     $DISCORD_CHANNEL_ID = $_ENV["DISCORD_CHANNEL_ID"];
@@ -79,7 +71,6 @@ function record($sid, $from)
     $title = null;
     $ft = null;
     $to = null;
-
 
     $xml = file_get_contents("http://radiko.jp/v3/program/date/$BEFORE_DATE/JP13.xml");
     $obj = simplexml_load_string($xml);
@@ -103,48 +94,6 @@ function record($sid, $from)
         }
     }
 
-    if ($ft == null) {
-        $xml = file_get_contents("http://radiko.jp/v3/program/date/$DATE/JP13.xml");
-        $obj = simplexml_load_string($xml);
-        $json = json_encode($obj);
-        $json = json_decode($json, true);
-
-        foreach ($json["stations"]["station"] as $one) {
-            if ($one["@attributes"]["id"] != $sid) {
-                continue;
-            }
-            foreach ($one["progs"]["prog"] as $prog) {
-                $_ft = $prog["@attributes"]["ft"];
-                $_to = $prog["@attributes"]["to"];
-                $_title = $prog["title"];
-
-                if ($_ft == date("YmdHis", $from)) {
-                    $ft = $_ft;
-                    $to = $_to;
-                    $title = $_title;
-                    break 2;
-                }
-            }
-            foreach ($one["progs"]["prog"] as $prog) {
-                $_ft = $prog["@attributes"]["ft"];
-                $_to = $prog["@attributes"]["to"];
-                $_title = $prog["title"];
-
-                echo "[Selector] Title: $_title\n";
-                echo "[Selector] FT: $_ft\n";
-                echo "[Selector] TO: $_to\n";
-                echo "[Selector] yes(y) or no: ";
-
-                $stdin = trim(fgets(STDIN));
-                if ($stdin == "y" || $stdin == "yes") {
-                    $ft = $_ft;
-                    $to = $_to;
-                    $title = $_title;
-                    break 2;
-                }
-            }
-        }
-    }
     if ($ft == null || $to == null || $title == null) {
         echo "No program found.\n";
         return;
@@ -153,7 +102,7 @@ function record($sid, $from)
     $unixtime = strtotime(substr($ft, 0, 4) . "/" . substr($ft, 4, 2) . "/" . substr($ft, 6, 2) . " " . substr($ft, 8, 2) . ":" . substr($ft, 10, 2) . ":" . substr($ft, 12, 2));
 
     if ($unixtime >= time()) {
-        echo "It has not been broadcast yet.";
+        echo "It has not been broadcast yet.\n";
         return;
     }
 
