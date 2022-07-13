@@ -94,6 +94,49 @@ function record($sid, $from)
         }
     }
 
+    if ($ft == null) {
+        $xml = file_get_contents("http://radiko.jp/v3/program/date/$DATE/JP13.xml");
+        $obj = simplexml_load_string($xml);
+        $json = json_encode($obj);
+        $json = json_decode($json, true);
+
+        foreach ($json["stations"]["station"] as $one) {
+            if ($one["@attributes"]["id"] != $sid) {
+                continue;
+            }
+            foreach ($one["progs"]["prog"] as $prog) {
+                $_ft = $prog["@attributes"]["ft"];
+                $_to = $prog["@attributes"]["to"];
+                $_title = $prog["title"];
+
+                if ($_ft == date("YmdHis", $from)) {
+                    $ft = $_ft;
+                    $to = $_to;
+                    $title = $_title;
+                    break 2;
+                }
+            }
+            foreach ($one["progs"]["prog"] as $prog) {
+                $_ft = $prog["@attributes"]["ft"];
+                $_to = $prog["@attributes"]["to"];
+                $_title = $prog["title"];
+
+                echo "[Selector] Title: $_title\n";
+                echo "[Selector] FT: $_ft\n";
+                echo "[Selector] TO: $_to\n";
+                echo "[Selector] yes(y) or no: ";
+
+                $stdin = trim(fgets(STDIN));
+                if ($stdin == "y" || $stdin == "yes") {
+                    $ft = $_ft;
+                    $to = $_to;
+                    $title = $_title;
+                    break 2;
+                }
+            }
+        }
+    }
+
     if ($ft == null || $to == null || $title == null) {
         echo "No program found.\n";
         return;
