@@ -273,7 +273,7 @@ function record($sid, $from)
     echo $http_response_header[0] . "\n";
     echo $result . "\n";
 
-    $lsid = "11111111111111111111111111111111111111";
+    $lsid = "88ecea37e968c1f17d5413312d9f8003";
 
     $PLAYLIST_URL = str_replace("#{sid}", $sid, $PLAYLIST_URL);
     $PLAYLIST_URL = str_replace("#{ft}", $ft, $PLAYLIST_URL);
