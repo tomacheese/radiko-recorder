@@ -235,15 +235,13 @@ function record($sid, $from)
             continue;
         }
         list($key, $value) = explode(": ", $header);
-        if ($key == "X-Radiko-AuthToken") {
+        if(strtolower($key) == "x-radiko-authtoken") {
             $auth_token = $value;
-        } elseif ($key == "X-Radiko-Authtoken") {
-            $auth_token = $value;
-        } elseif ($key == "X-RADIKO-AUTHTOKEN") {
-            $auth_token = $value;
-        } elseif ($key == "X-Radiko-KeyOffset") {
+        }
+        if (strtolower($key) == "x-radiko-keyoffset") {
             $keyOffset = $value;
-        } elseif ($key == "X-Radiko-KeyLength") {
+        }
+        if (strtolower($key) == "x-radiko-keylength") {
             $keyLength = $value;
         }
     }
