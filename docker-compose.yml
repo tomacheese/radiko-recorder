@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   radiko-recorder:
-    image: ghcr.io/tomacheese/radiko-recorder:v1.0.26
+    image: ghcr.io/tomacheese/radiko-recorder:v1.0.27
     volumes:
       - type: bind
         source: ./data
