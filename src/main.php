@@ -1,4 +1,5 @@
 <?php
+
 date_default_timezone_set("Asia/Tokyo");
 ini_set("memory_limit", -1);
 
@@ -51,7 +52,7 @@ function formatBytes($size, $precision = 2)
     $base = log($size, 1024);
     $suffixes = array('', 'K', 'M', 'G', 'T');
 
-    return round(pow(1024, $base - floor($base)), $precision) .' '. $suffixes[floor($base)];
+    return round(pow(1024, $base - floor($base)), $precision) . ' ' . $suffixes[floor($base)];
 }
 
 function record($sid, $from)
@@ -153,11 +154,17 @@ function record($sid, $from)
     echo "FT: $ft\n";
     echo "TO: $to\n";
 
+    // こねくと (1) -> こねくと
+    // こねくと (2) -> こねくと
+    // こねくと (3) -> こねくと
+    $original_title = preg_replace("/\([0-9]+\)/", "", $title);
+    $original_title = trim($original_title);
+
     $OUTPUT_DIR = __DIR__ . "/temp/" . $title . "/";
     if (!file_exists($OUTPUT_DIR)) {
         mkdir($OUTPUT_DIR, 0777, true);
     }
-    $LAST_OUTPUT_DIR = "/data/" . $title . "/";
+    $LAST_OUTPUT_DIR = "/data/" . $original_title . "/";
     if (!file_exists($LAST_OUTPUT_DIR)) {
         mkdir($LAST_OUTPUT_DIR, 0777, true);
     }
@@ -311,7 +318,7 @@ function record($sid, $from)
         $downloaded[] = date("Ymd_D", $unixtime) . "_$title";
         file_put_contents("/data/downloaded.json", json_encode($downloaded));
 
-        DiscordSend($DISCORD_CHANNEL_ID, ":white_check_mark:録音が完了しました: `$title` (`$ft` - `$to`) - TS:`" . formatBytes(filesize($OUTPUT_PATH)). "` / MP3:`" . formatBytes(filesize($LAST_OUTPUT_PATH)). "`");
+        DiscordSend($DISCORD_CHANNEL_ID, ":white_check_mark:録音が完了しました: `$title` (`$ft` - `$to`) - TS:`" . formatBytes(filesize($OUTPUT_PATH)) . "` / MP3:`" . formatBytes(filesize($LAST_OUTPUT_PATH)) . "`");
         unlink($OUTPUT_PATH);
     } else {
         echo "Download failed!";
